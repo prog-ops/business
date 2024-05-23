@@ -1,23 +1,40 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNodeAPI} from "../hooks/useNodeAPI.jsx";
 
 const BusinessList = () => {
-    const { businesses, loadBusinesses } = useNodeAPI();
+    const { businesses, loadBusinesses, setSearchTerm, searchTerm } = useNodeAPI();
+    const [term, setTerm] = useState('');
 
     useEffect(() => {
-        loadBusinesses(true);
+        loadBusinesses(true, searchTerm);
         // This will show duplication if using only business.id for key, add the index to prevent it
         // console.log('Business IDs:', businesses.map(business => business.id));
 
     }, [
-        // no deps because load called by user interaction
+        searchTerm
+        // without term, set no deps as load called by user interaction
     ]);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setSearchTerm(term);
+        loadBusinesses(true, term);
+    };
 
     return (
         <div>
             {businesses.length > 0 ? (
                 <div>
                     <h1>Businesses</h1>
+                    <form onSubmit={handleSearch}>
+                        <input
+                            type="text"
+                            value={term}
+                            onChange={(e) => setTerm(e.target.value)}
+                            placeholder="Search e.g. beef, eat, etc...."
+                        />
+                        <button type="submit">Search</button>
+                    </form>
                     <ul>
                         {businesses.map((business, indeks) => (
                             <li key={`${business.id}-${indeks}`}>
@@ -29,7 +46,7 @@ const BusinessList = () => {
                             </li>
                         ))}
                     </ul>
-                    <button onClick={() => loadBusinesses()}>Load More</button>
+                    <button onClick={() => loadBusinesses(false, searchTerm)}>Load More</button>
                 </div>
             ) : (
                 <p>Loading...</p>
