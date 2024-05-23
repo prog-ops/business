@@ -16,17 +16,32 @@ const apiUrl = process.env.YELP_API_URL;
 // Define proxy route
 app.get('/api/yelp', async (req, res) => {
     try {
-        const { offset = 0, limit = 10, term = '' } = req.query; // Default values if not provided
+        const {
+            offset = 0,
+            limit = 10,
+            term = '',
+            categories = '',
+            price
+        } = req.query; // Default values if not provided
+
+        // Create params object and add only non-empty values
+        const params = {
+            location: 'san francisco',
+            sort_by: 'best_match',
+            limit,
+            offset,
+            // term, // search by term
+            // Filter by categories and price
+            // categories,
+            // price
+        };
+        if (term) params.term = term;
+        if (categories) params.categories = categories;
+        if (price) params.price = price;
 
         // Request to Yelp API
         const response = await axios.get(apiUrl, {
-            params: {
-                location: 'san fransisco',
-                sort_by: 'best_match',
-                limit,
-                offset,
-                term // search by term
-            },
+            params: params,
             headers: {
                 accept: 'application/json',
                 Authorization: `Bearer ${apiKey}`,
