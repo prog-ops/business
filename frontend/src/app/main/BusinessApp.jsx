@@ -1,12 +1,10 @@
 import React from 'react';
-import BusinessList from './BusinessList';
 import {YelpProvider} from "../hooks/useNodeAPI.jsx";
+import BusinessList from "./BusinessList.jsx";
 
 const BusinessApp = () => {
     return (
-        <YelpProvider>
-            <BusinessList />
-        </YelpProvider>
+        <BusinessList/>
     );
 };
 

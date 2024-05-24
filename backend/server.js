@@ -12,6 +12,7 @@ app.use(cors()); // Enable CORS for all routes
 
 const apiKey = process.env.YELP_API_KEY;
 const apiUrl = process.env.YELP_API_URL;
+const apiUrlDetail = process.env.YELP_API_URL_DETAIL;
 
 // Define proxy route
 app.get('/api/yelp', async (req, res) => {
@@ -52,6 +53,22 @@ app.get('/api/yelp', async (req, res) => {
     } catch (error) {
         console.error('Error details:', error.response ? error.response.data : error.message);
         res.status(500).send(error.toString());
+    }
+});
+
+// Route to fetch business details by ID
+app.get('/api/yelp/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const response = await axios.get(`${apiUrlDetail}/${id}`, {
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+            },
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching business detail:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: error.toString() });
     }
 });
 

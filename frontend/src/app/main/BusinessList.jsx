@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useNodeAPI} from "../hooks/useNodeAPI.jsx";
+import {Link} from 'react-router-dom'
 
 const BusinessList = () => {
-    const { businesses, loadBusinesses, setSearchTerm, searchTerm, setCategories, categories, setPrice, price } = useNodeAPI();
+    const { businesses, loadBusinesses, loadBusinessDetail, setSearchTerm, searchTerm, setCategories, categories, setPrice, price } = useNodeAPI();
     const [term, setTerm] = useState('');
     const [category, setCategory] = useState('');
     const [priceFilter, setPriceFilter] = useState('');
@@ -41,6 +42,13 @@ const BusinessList = () => {
         loadBusinesses(true, term, category, priceFilter);
     };
 
+    const handleClick = (id) => {
+        // history.push(`/business/${id}`);
+    };
+    const handleBusinessClick = async (id) => {
+        await loadBusinessDetail(id);
+    };
+
     return (
         <div>
             <h1>Businesses</h1>
@@ -70,12 +78,18 @@ const BusinessList = () => {
                 <div>
                     <ul>
                         {businesses.map((business, indeks) => (
-                            <li key={`${business.id}-${indeks}`}>
+                            <li key={`${business.id}-${indeks}`} className="hover:bg-gray-500 p-2">
                                 <h2>{business.name}</h2>
                                 <p>{business.location.display_address.join(', ')}</p>
                                 <p>Rating: {business.rating}</p>
                                 <p>Price: {business.price}</p>
                                 <img src={business.image_url} alt={business.name} width="100"/>
+                                <Link
+                                    to={`/business/${business.id}`}
+                                    onClick={() => handleBusinessClick(business.id)}
+                                    className="cursor-pointer">
+                                    <button>Detail</button>
+                                </Link>
                             </li>
                         ))}
                     </ul>

@@ -11,6 +11,7 @@ export const YelpProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState('');
     const [price, setPrice] = useState('');
+    const [businessDetail, setBusinessDetail] = useState(null);
     const limit = 5;
 
     const loadBusinesses = async (
@@ -37,10 +38,22 @@ export const YelpProvider = ({ children }) => {
         }
     };
 
+    const loadBusinessDetail = async (id) => {
+        try {
+            const response = await fetch(`${backendUrl}/${id}`);
+            const data = await response.json();
+            setBusinessDetail(data);
+        } catch (error) {
+            console.error('Error fetching business detail:', error);
+        }
+    };
+
     return (
         <YelpContext.Provider value={{
             businesses,
+            businessDetail,
             loadBusinesses,
+            loadBusinessDetail,
             setSearchTerm,
             searchTerm,
             setCategories,
