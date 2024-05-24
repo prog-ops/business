@@ -19,6 +19,20 @@ const BusinessList = () => {
         // without custom params, set no deps as load is called by user interaction
     ]);
 
+    // Debouncing for search function so if search button is not pressed after querying, after 3s it will automatically apply the params search. Debounce only if there is/are query/queries
+    useEffect(() => {
+        if (term || category || priceFilter) {
+            const handler = setTimeout(() => {
+                setSearchTerm(term);
+                setCategories(category);
+                setPrice(priceFilter);
+                loadBusinesses(true, term, category, priceFilter);
+            }, 3_000);
+            // Cleanup function to clear the timeout if the user types again
+            return () => clearTimeout(handler);
+        }
+    }, [term, category, priceFilter]);
+
     const handleSearch = (e) => {
         e.preventDefault();
         setSearchTerm(term);
