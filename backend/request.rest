@@ -1,0 +1,16 @@
+GET http://localhost:3001/produk/search?search_query=feb&page=0&limit=8
+
+###
+GET http://localhost:3001/produk
+
+# null test
+###
+GET http://localhost:3001/produk/10
+
+# backend for yelp
+###
+GET http://localhost:3001/api/yelp?offset=0&limit=2
+
+# get by id
+###
+GET http://localhost:3001/api/yelp/f-m7-hyFzkf0HSEeQ2s-9A
