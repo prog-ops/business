@@ -27,7 +27,7 @@ const BusinessDetail = () => {
             }, 5000); // Auto slide every 5s
             return () => clearInterval(interval); // Clear interval on component unmount
         }
-    }, [businessDetail]);
+    }, [currentImageIndex]);
 
     if (!businessDetail) {
         return <div className="text-center">Loading...</div>;
