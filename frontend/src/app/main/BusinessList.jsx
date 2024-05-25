@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useNodeAPI} from "../hooks/useNodeAPI.jsx";
 import {Link} from 'react-router-dom'
 
+const inputs = 'rounded-md p-2 me-4'
+
 const BusinessList = () => {
     const { businesses, loadBusinesses, loadBusinessDetail, setSearchTerm, searchTerm, setCategories, categories, setPrice, price } = useNodeAPI();
     const [term, setTerm] = useState('');
@@ -51,21 +53,28 @@ const BusinessList = () => {
 
     return (
         <div>
-            <h1>Businesses</h1>
-            <form onSubmit={handleSearch}>
+            <h1 className='mb-8'>Businesses List</h1>
+            <form
+                className='mb-8 p-2'
+                onSubmit={handleSearch}>
                 <input
+                    className={inputs}
                     type="text"
                     value={term}
                     onChange={(e) => setTerm(e.target.value)}
                     placeholder="Search e.g. beef, eat, etc...."
                 />
                 <input
+                    className={inputs}
                     type="text"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder="Category"
                 />
-                <select value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
+                <select
+                    className={inputs}
+                    value={priceFilter}
+                    onChange={(e) => setPriceFilter(e.target.value)}>
                     <option value="">Select Price</option>
                     <option value="1">$</option>
                     <option value="2">$$</option>
@@ -78,18 +87,62 @@ const BusinessList = () => {
                 <div>
                     <ul>
                         {businesses.map((business, indeks) => (
-                            <li key={`${business.id}-${indeks}`} className="hover:bg-gray-500 p-2">
-                                <h2>{business.name}</h2>
-                                <p>{business.location.display_address.join(', ')}</p>
-                                <p>Rating: {business.rating}</p>
-                                <p>Price: {business.price}</p>
-                                <img src={business.image_url} alt={business.name} width="100"/>
-                                <Link
-                                    to={`/business/${business.id}`}
-                                    onClick={() => handleBusinessClick(business.id)}
-                                    className="cursor-pointer">
-                                    <button>Detail</button>
-                                </Link>
+                            <li
+                                key={`${business.id}-${indeks}`}
+                                className="overflow-hidden flex relative bg-blue-950 rounded-3xl shadow-lg shadow-blue-950 hover:bg-blue-900 mb-8"
+                                style={{height: '300px'}} // Set a fixed height for the list item
+                            >
+                                <img
+                                    className="w-1/5 object-cover rounded-lg"
+                                    src={business.image_url}
+                                    alt={business.name}
+                                    style={{height: '100%'}} // Ensure the image takes the full height of its container
+                                />
+                                <div
+                                    className="flex-grow px-4 py-4 flex flex-col justify-between relative ml-2"> {/* Adjusted container to grow and added margin-left */}
+                                    <div
+                                        className="flex justify-between items-start"> {/* Added flexbox to position chips */}
+                                        <h1>{business.name} ⭐ {business.rating}</h1>
+                                    </div>
+                                    <div className="flex flex-col space-y-4 mb-2"> {/* Added space between the elements */}
+                                        <p className="flex text-gray-300">{business.location.display_address.join(', ')}</p>
+                                        <p className="flex">{business.price}</p>
+                                    </div>
+                                    {business.categories.length > 0 ?
+                                        <div className="flex flex-wrap">
+                                            {business.categories.map((item, index) => (
+                                                    <div
+                                                        className="bg-blue-800 text-amber-300 text-sm px-2 py-1 rounded-full mr-2 mb-2">
+                                                        {item.title}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                        : null
+                                    }
+                                    {business.transactions.length > 0 ?
+                                        <div className="flex flex-wrap">
+                                            {business.transactions.map((item, index) => (
+                                                    <div
+                                                        className="bg-blue-800 text-white text-sm px-2 py-1 rounded-full mr-2 mb-2">
+                                                        {item === 'restaurant_reservation' ? 'RESTAURANT RESERVATION' : item.toUpperCase()}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                        : null
+                                    }
+                                    <Link
+                                        to={`/business/${business.id}`}
+                                        onClick={() => handleBusinessClick(business.id)}
+                                        className="bottom-4 right-4 cursor-pointer flex items-center" // Positioned the button at the bottom right
+                                    >
+                                        <button
+                                            className="absolute bottom-4 right-4 w-12 h-8 flex items-center justify-center bg-green-700 rounded-full text-white">
+                                            {'>'}
+                                        </button>
+                                    </Link>
+                                </div>
                             </li>
                         ))}
                     </ul>
